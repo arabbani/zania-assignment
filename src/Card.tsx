@@ -1,6 +1,7 @@
-import { Image, Card as MantineCard, Text } from "@mantine/core";
-import { Data } from "./type";
+import { Box, Image, Loader, Card as MantineCard, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
+import { useState } from "react";
+import { Data } from "./type";
 
 function getImageUrl(id: number) {
   return `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-${id}.png`;
@@ -11,6 +12,7 @@ type CardProp = {
 };
 
 export function Card({ item }: CardProp) {
+  const [imageLoaded, setImageLoaded] = useState(false);
   const imageUrl = getImageUrl(item.position + 1);
 
   const handleClick = () => {
@@ -23,6 +25,10 @@ export function Card({ item }: CardProp) {
     });
   };
 
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
   return (
     <MantineCard
       style={{
@@ -31,7 +37,18 @@ export function Card({ item }: CardProp) {
       onClick={handleClick}
     >
       <Text mb="sm">{item.title}</Text>
-      <Image src={imageUrl} alt={item.title} />
+
+      <Box mih={200}>
+        <Image
+          src={imageUrl}
+          alt={item.title}
+          onLoad={handleImageLoad}
+          style={{
+            display: imageLoaded ? "block" : "none",
+          }}
+        />
+        {!imageLoaded && <Loader />}
+      </Box>
     </MantineCard>
   );
 }
