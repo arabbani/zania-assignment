@@ -1,12 +1,13 @@
 import "@mantine/core/styles.css";
 
 import { Container, MantineProvider } from "@mantine/core";
+import { Home } from "./Home";
 
 function App() {
   return (
     <MantineProvider>
       <Container>
-        <h1>Hello</h1>
+        <Home />
       </Container>
     </MantineProvider>
   );
