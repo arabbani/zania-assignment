@@ -1,18 +1,19 @@
 import { Box, Image, Loader, Card as MantineCard, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { useState } from "react";
-import { Data } from "../utils/type";
+import { Item } from "../utils/type";
 
 function getImageUrl(id: number) {
   return `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-${id}.png`;
 }
 
 type CardProp = {
-  item: Data;
+  item: Item;
 };
 
 export function Card({ item }: CardProp) {
   const [imageLoaded, setImageLoaded] = useState(false);
+
   const imageUrl = getImageUrl(item.position + 1);
 
   const handleClick = () => {
