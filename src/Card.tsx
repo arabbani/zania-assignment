@@ -53,6 +53,9 @@ export function Card({ item }: CardProp) {
           style={{
             display: imageLoaded ? "block" : "none",
           }}
+          h={200}
+          w="auto"
+          fit="cover"
         />
         {!imageLoaded && <Loader />}
       </Box>
