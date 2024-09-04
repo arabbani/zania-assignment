@@ -1,9 +1,10 @@
 import { Grid } from "@mantine/core";
 import { Card } from "./Card";
-import data from "./data.json";
+import data from "../data.json";
+import { Data } from "../utils/type";
 
 export function Home() {
-  const sortedItems = data.sort(
+  const sortedItems: Data[] = data.sort(
     (itemA, itemB) => itemA.position - itemB.position
   );
 

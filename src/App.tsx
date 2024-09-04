@@ -2,7 +2,7 @@ import "@mantine/core/styles.css";
 
 import { Container, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
-import { Home } from "./Home";
+import { Home } from "./components/Home";
 
 function App() {
   return (
