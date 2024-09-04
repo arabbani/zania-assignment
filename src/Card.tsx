@@ -17,11 +17,18 @@ export function Card({ item }: CardProp) {
 
   const handleClick = () => {
     modals.open({
-      children: <Image src={imageUrl} alt={item.title} />,
+      children: (
+        <Image
+          src={imageUrl}
+          alt={item.title}
+          fallbackSrc="https://placehold.co/600x400?text=Placeholder"
+        />
+      ),
       withCloseButton: false,
       centered: true,
       size: "xl",
       padding: "0",
+      radius: "0",
     });
   };
 
