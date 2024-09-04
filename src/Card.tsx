@@ -19,6 +19,7 @@ export function Card({ item }: CardProp) {
       withCloseButton: false,
       centered: true,
       size: "xl",
+      padding: "0",
     });
   };
 
