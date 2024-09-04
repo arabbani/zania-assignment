@@ -1,5 +1,6 @@
 import { Image, Card as MantineCard, Text } from "@mantine/core";
 import { Data } from "./type";
+import { modals } from "@mantine/modals";
 
 function getImageUrl(id: number) {
   return `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-${id}.png`;
@@ -11,11 +12,22 @@ type CardProp = {
 
 export function Card({ item }: CardProp) {
   const imageUrl = getImageUrl(item.position + 1);
+
+  const handleClick = () => {
+    modals.open({
+      children: <Image src={imageUrl} alt={item.title} />,
+      withCloseButton: false,
+      centered: true,
+      size: "xl",
+    });
+  };
+
   return (
     <MantineCard
       style={{
         cursor: "pointer",
       }}
+      onClick={handleClick}
     >
       <Text mb="sm">{item.title}</Text>
       <Image src={imageUrl} alt={item.title} />

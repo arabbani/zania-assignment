@@ -1,6 +1,6 @@
 import { Grid } from "@mantine/core";
-import data from "./data.json";
 import { Card } from "./Card";
+import data from "./data.json";
 
 export function Home() {
   const sortedItems = data.sort(
