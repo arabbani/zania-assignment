@@ -26,27 +26,29 @@ export const handlers = [
 
     if (items) {
       addDataToLocalStorage(items as Item[]);
+      return new HttpResponse(null, { status: 200 });
     }
-    return HttpResponse.json(items);
+    return new HttpResponse(null, { status: 404 });
   }),
   http.post("/api/items", async ({ request }) => {
     const item = (await request.json()) as Omit<Item, "position">;
 
     if (!item) {
-      return;
+      return new HttpResponse(null, { status: 404 });
     }
 
     const localData = getDataFromLocalStorage();
 
     if (localData) {
       const localJsonData: Item[] = JSON.parse(localData);
-      const newData: Item[] = [
-        ...localJsonData,
-        { ...item, position: localJsonData.length },
-      ];
+      const dataToAdd = { ...item, position: localJsonData.length };
+      const newData: Item[] = [...localJsonData, dataToAdd];
       addDataToLocalStorage(newData);
+      return HttpResponse.json(dataToAdd, { status: 201 });
     } else {
-      addDataToLocalStorage([{ ...item, position: 0 }]);
+      const dataToAdd = { ...item, position: 0 };
+      addDataToLocalStorage([dataToAdd]);
+      return HttpResponse.json(dataToAdd, { status: 201 });
     }
   }),
 ];

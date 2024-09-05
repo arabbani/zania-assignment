@@ -40,6 +40,9 @@ export function Home() {
     await fetch("/api/items", {
       method: "PATCH",
       body: JSON.stringify(items),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     setLastSavedTime(new Date());
