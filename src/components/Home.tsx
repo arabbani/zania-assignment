@@ -38,7 +38,7 @@ export function Home() {
     toggleSaving(true);
 
     await fetch("/api/items", {
-      method: "POST",
+      method: "PATCH",
       body: JSON.stringify(items),
     });
 
