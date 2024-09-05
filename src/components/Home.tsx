@@ -2,6 +2,7 @@ import { Grid } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import { Item } from "../utils/type";
 import { Card } from "./Card";
+import { useInterval } from "../utils/hooks/useInterval";
 
 export function Home() {
   const [items, setItems] = useState<Item[]>();
@@ -22,6 +23,17 @@ export function Home() {
 
     getItems();
   }, []);
+
+  useInterval(() => {
+    if (!items) {
+      return;
+    }
+
+    fetch("/api/items", {
+      method: "POST",
+      body: JSON.stringify(items),
+    });
+  }, 5000);
 
   const handleDragEnd = () => {
     const clonedItems = JSON.parse(JSON.stringify(items));
