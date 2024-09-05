@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { delay, http, HttpResponse } from "msw";
 import { Item } from "../utils/type";
 import {
   addDataToLocalStorage,
@@ -19,6 +19,9 @@ export const handlers = [
     }
   }),
   http.post("/api/items", async ({ request }) => {
+    // wait for 2000ms before responding
+    await delay(2000);
+
     const items = await request.json();
 
     if (items) {

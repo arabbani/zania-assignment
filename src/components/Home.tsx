@@ -1,4 +1,4 @@
-import { Grid } from "@mantine/core";
+import { Box, Grid, LoadingOverlay } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import { Item } from "../utils/type";
 import { Card } from "./Card";
@@ -6,10 +6,13 @@ import { useInterval } from "../utils/hooks/useInterval";
 
 export function Home() {
   const [items, setItems] = useState<Item[]>();
+  const [saving, toggleSaving] = useState(false);
 
+  const changeDetectorRef = useRef<boolean>(false);
   const draggedItemRef = useRef<number>(0);
   const draggedOverItemRef = useRef<number>(0);
 
+  // In case the data comes out of order
   const sortedItems: Item[] | undefined = items?.sort(
     (itemA, itemB) => itemA.position - itemB.position
   );
@@ -24,18 +27,27 @@ export function Home() {
     getItems();
   }, []);
 
-  useInterval(() => {
-    if (!items) {
+  useInterval(async () => {
+    if (!changeDetectorRef.current) {
       return;
     }
 
-    fetch("/api/items", {
+    toggleSaving(true);
+
+    await fetch("/api/items", {
       method: "POST",
       body: JSON.stringify(items),
     });
+
+    changeDetectorRef.current = false;
+    toggleSaving(false);
   }, 5000);
 
   const handleDragEnd = () => {
+    if (draggedItemRef.current === draggedOverItemRef.current) {
+      return;
+    }
+
     const clonedItems = JSON.parse(JSON.stringify(items));
     const draggedItem = clonedItems[draggedItemRef.current];
     const draggedOverItem = clonedItems[draggedOverItemRef.current];
@@ -46,22 +58,32 @@ export function Home() {
     clonedItems[draggedItemRef.current] = draggedOverItem;
     clonedItems[draggedOverItemRef.current] = draggedItem;
     setItems(clonedItems);
+    changeDetectorRef.current = true;
+    draggedItemRef.current = 0;
+    draggedOverItemRef.current = 0;
   };
 
   return (
-    <Grid justify="center">
-      {sortedItems?.map((item, index) => (
-        <Grid.Col
-          span={4}
-          key={item.position}
-          draggable
-          onDragStart={() => (draggedItemRef.current = index)}
-          onDragEnter={() => (draggedOverItemRef.current = index)}
-          onDragEnd={handleDragEnd}
-        >
-          <Card item={item} />
-        </Grid.Col>
-      ))}
-    </Grid>
+    <Box pos="relative">
+      <LoadingOverlay
+        visible={saving}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
+      <Grid justify="center">
+        {sortedItems?.map((item, index) => (
+          <Grid.Col
+            span={4}
+            key={item.position}
+            draggable
+            onDragStart={() => (draggedItemRef.current = index)}
+            onDragEnter={() => (draggedOverItemRef.current = index)}
+            onDragEnd={handleDragEnd}
+          >
+            <Card item={item} />
+          </Grid.Col>
+        ))}
+      </Grid>
+    </Box>
   );
 }
