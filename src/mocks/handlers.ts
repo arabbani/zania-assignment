@@ -24,11 +24,11 @@ export const handlers = [
 
     const items = await request.json();
 
-    if (items) {
-      addDataToLocalStorage(items as Item[]);
-      return new HttpResponse(null, { status: 200 });
+    if (!items) {
+      return new HttpResponse(null, { status: 404 });
     }
-    return new HttpResponse(null, { status: 404 });
+    addDataToLocalStorage(items as Item[]);
+    return new HttpResponse(null, { status: 200 });
   }),
   http.post("/api/items", async ({ request }) => {
     const item = (await request.json()) as Omit<Item, "position">;
