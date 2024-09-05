@@ -8,7 +8,7 @@ function App() {
   return (
     <MantineProvider>
       <ModalsProvider>
-        <Container>
+        <Container py="lg">
           <Home />
         </Container>
       </ModalsProvider>

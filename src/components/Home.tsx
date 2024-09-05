@@ -1,12 +1,15 @@
-import { Box, Grid, LoadingOverlay } from "@mantine/core";
+import { Box, Flex, Grid, LoadingOverlay } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import { Item } from "../utils/type";
 import { Card } from "./Card";
 import { useInterval } from "../utils/hooks/useInterval";
+import { getTimeDifference } from "../utils/time";
 
 export function Home() {
   const [items, setItems] = useState<Item[]>();
   const [saving, toggleSaving] = useState(false);
+  const [currentTime, setCurrentTime] = useState<Date>();
+  const [lastSavedTime, setLastSavedTime] = useState<Date>();
 
   const changeDetectorRef = useRef<boolean>(false);
   const draggedItemRef = useRef<number>(0);
@@ -39,9 +42,14 @@ export function Home() {
       body: JSON.stringify(items),
     });
 
+    setLastSavedTime(new Date());
     changeDetectorRef.current = false;
     toggleSaving(false);
   }, 5000);
+
+  useInterval(() => {
+    setCurrentTime(new Date());
+  }, 1000);
 
   const handleDragEnd = () => {
     if (draggedItemRef.current === draggedOverItemRef.current) {
@@ -70,6 +78,11 @@ export function Home() {
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
+      {lastSavedTime && currentTime && (
+        <Flex justify="center">
+          Time since last save: {getTimeDifference(lastSavedTime, currentTime)}
+        </Flex>
+      )}
       <Grid justify="center">
         {sortedItems?.map((item, index) => (
           <Grid.Col
