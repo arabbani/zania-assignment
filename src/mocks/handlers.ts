@@ -51,4 +51,24 @@ export const handlers = [
       return HttpResponse.json(dataToAdd, { status: 201 });
     }
   }),
+  http.delete("/api/items/:title", async ({ params }) => {
+    // I am assuming title as primary key here. For a real world application,
+    // this should be an unique key like UUID
+    const title = params.title;
+    const localData = getDataFromLocalStorage();
+
+    if (!localData || !title || typeof title !== "string") {
+      return new HttpResponse(null, { status: 404 });
+    }
+    const localJsonData: Item[] = JSON.parse(localData);
+    const filteredData = localJsonData.filter((item) => item.title !== title);
+
+    // if the condition is true, that means no data is deleted. That means the title is wrong
+    if (filteredData.length === localJsonData.length) {
+      return new HttpResponse(null, { status: 404 });
+    }
+
+    addDataToLocalStorage(filteredData);
+    return new HttpResponse(null, { status: 204 });
+  }),
 ];
